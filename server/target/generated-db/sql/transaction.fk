@@ -1,7 +1,0 @@
-alter table transaction add constraint transaction_fk_0 foreign key (
-    scheme_code
-)
-references scheme(
-    code
-);
-

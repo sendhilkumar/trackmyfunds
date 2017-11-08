@@ -1,5 +1,0 @@
-alter table transaction add constraint transaction_pk primary key (id);
-
-drop index if exists transaction_idx0;
-create index transaction_idx0 on transaction(scheme_code);
-

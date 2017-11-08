@@ -1,2 +1,0 @@
-alter table latest_nav_date add constraint latest_nav_date_pk primary key (date);
-

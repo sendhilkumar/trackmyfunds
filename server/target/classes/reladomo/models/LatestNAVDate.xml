@@ -1,8 +1,0 @@
-<MithraObject objectType="transactional">
-    <PackageName>tracker.domain</PackageName>
-    <ClassName>LatestNAVDate</ClassName>
-    <DefaultTable>latest_nav_date</DefaultTable>
-
-    <Attribute name="date" javaType="Timestamp" columnName="date" primaryKey="true"/>
-
-</MithraObject>

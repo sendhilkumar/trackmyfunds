@@ -1,2 +1,0 @@
-alter table scheme add constraint scheme_pk primary key (code);
-
