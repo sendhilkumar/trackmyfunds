@@ -1,0 +1,2 @@
+alter table nav_load add constraint nav_load_pk primary key (id);
+

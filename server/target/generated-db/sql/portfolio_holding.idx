@@ -1,0 +1,5 @@
+alter table portfolio_holding add constraint portfolio_holding_pk primary key (portfolio_id, scheme_code);
+
+drop index if exists portfolio_holding_idx0;
+create index portfolio_holding_idx0 on portfolio_holding(scheme_code);
+

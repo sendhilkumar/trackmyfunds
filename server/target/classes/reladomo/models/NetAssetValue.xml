@@ -1,0 +1,14 @@
+<MithraObject objectType="transactional">
+    <PackageName>tracker.domain</PackageName>
+    <ClassName>NetAssetValue</ClassName>
+    <DefaultTable>net_asset_value</DefaultTable>
+
+    <Attribute name="schemeCode" javaType="int" columnName="scheme_code" maxLength="50" truncate="true" primaryKey="true"/>
+    <Attribute name="date" javaType="Timestamp" columnName="date" primaryKey="true"/>
+
+    <Attribute name="netAssetValue" javaType="double" columnName="net_asset_value" />
+    <Attribute name="repurchasePrice" javaType="double" columnName="repurchase_price" />
+    <Attribute name="salePrice" javaType="double" columnName="sale_price" />
+
+    <Attribute name="loadId" javaType="int" columnName="load_id" />
+</MithraObject>

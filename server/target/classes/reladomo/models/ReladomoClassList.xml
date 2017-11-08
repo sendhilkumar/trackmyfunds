@@ -1,0 +1,9 @@
+<Mithra>
+    <MithraObjectResource name="NetAssetValue"/>
+    <MithraObjectResource name="NAVLoad"/>
+    <MithraObjectResource name="Scheme"/>
+    <MithraObjectResource name="Transaction"/>
+    <MithraObjectResource name="LatestNAVDate"/>
+    <MithraObjectResource name="Portfolio"/>
+    <MithraObjectResource name="PortfolioHolding"/>
+</Mithra>

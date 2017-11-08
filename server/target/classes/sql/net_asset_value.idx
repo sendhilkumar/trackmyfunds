@@ -1,0 +1,2 @@
+alter table net_asset_value add constraint net_asset_value_pk primary key (scheme_code, date);
+

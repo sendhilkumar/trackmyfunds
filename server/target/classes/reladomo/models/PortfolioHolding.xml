@@ -1,0 +1,13 @@
+<MithraObject objectType="transactional">
+    <PackageName>tracker.domain</PackageName>
+    <ClassName>PortfolioHolding</ClassName>
+    <DefaultTable>portfolio_holding</DefaultTable>
+
+    <Attribute name="portfolioId" javaType="int" columnName="portfolio_id" primaryKey="true"/>
+    <Attribute name="schemeCode" javaType="int" columnName="scheme_code" primaryKey="true"/>
+
+    <Relationship name="scheme" relatedObject="Scheme" cardinality="many-to-one" >
+        Scheme.code = this.schemeCode
+    </Relationship>
+
+</MithraObject>

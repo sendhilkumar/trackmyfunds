@@ -1,0 +1,2 @@
+alter table portfolio add constraint portfolio_pk primary key (id);
+

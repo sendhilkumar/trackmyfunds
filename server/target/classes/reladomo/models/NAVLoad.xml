@@ -1,0 +1,11 @@
+<MithraObject objectType="transactional">
+    <PackageName>tracker.domain</PackageName>
+    <ClassName>NAVLoad</ClassName>
+    <DefaultTable>nav_load</DefaultTable>
+
+    <Attribute name="id" javaType="int" columnName="id" primaryKey="true" primaryKeyGeneratorStrategy="Max" />
+    <Attribute name="loadTime" javaType="Timestamp" columnName="load_time"/>
+    <Attribute name="latestNavDate" javaType="Timestamp" columnName="latest_nav_date"/>
+    <Attribute name="maxOccuringDate" javaType="Timestamp" columnName="max_occuring_date"/>
+
+</MithraObject>

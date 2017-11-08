@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>tracker</groupId>
+    <artifactId>server</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <reladomo.version>16.6.1</reladomo.version>
+        <dropwizard.version>1.1.4</dropwizard.version>
+    </properties>
+
+    <build>
+        <!--<resources>-->
+        <!--<resource>-->
+        <!--<directory>../web/build</directory>-->
+        <!--<filtering>true</filtering>-->
+        <!--</resource>-->
+        <!--</resources>-->
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes/web/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>../web/build</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>tracker.server.TrackerApplication</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/reladomo</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <!--
+                        "generated-db" is added to resource because the sample app HelloReladomoApp
+                        loads generated ddl/idx files to initialize h2 db in memory.
+                        No need to do this for typical production apps.
+                    -->
+                    <execution>
+                        <id>add-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-db/</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.3</version>
+                <executions>
+                    <execution>
+                        <id>generateMithra</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
+                                <taskdef name="gen-reladomo" classpath="plugin_classpath"
+                                         classname="com.gs.fw.common.mithra.generator.MithraGenerator"/>
+                                <gen-reladomo
+                                        xml="${project.basedir}/src/main/resources/reladomo/models/ReladomoClassList.xml"
+                                        generateGscListMethod="true"
+                                        generatedDir="${project.build.directory}/generated-sources/reladomo"
+                                        nonGeneratedDir="${project.basedir}/src/main/java"/>
+                                <taskdef name="gen-ddl"
+                                         classname="com.gs.fw.common.mithra.generator.dbgenerator.MithraDbDefinitionGenerator"
+                                         loaderRef="reladomoGenerator">
+                                    <classpath refid="maven.plugin.classpath"/>
+                                </taskdef>
+                                <gen-ddl
+                                        xml="${project.basedir}/src/main/resources/reladomo/models/ReladomoClassList.xml"
+                                        generatedDir="${project.build.directory}/generated-db/sql"
+                                        databaseType="postgres"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.goldmansachs.reladomo</groupId>
+                        <artifactId>reladomogen</artifactId>
+                        <version>${reladomo.version}</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>com.goldmansachs.reladomo</groupId>
+                        <artifactId>reladomo-gen-util</artifactId>
+                        <version>${reladomo.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-core</artifactId>
+            <version>${dropwizard.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-assets</artifactId>
+            <version>${dropwizard.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox-tools</artifactId>
+            <version>2.0.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.goldmansachs.reladomo</groupId>
+            <artifactId>reladomo</artifactId>
+            <version>${reladomo.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.goldmansachs.reladomo</groupId>
+            <artifactId>reladomogen</artifactId>
+            <version>${reladomo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.goldmansachs.reladomo</groupId>
+            <artifactId>reladomo-gen-util</artifactId>
+            <version>${reladomo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.goldmansachs.reladomo</groupId>
+            <artifactId>reladomo-serial</artifactId>
+            <version>${reladomo.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>7.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>7.1.0</version>
+        </dependency>
+
+    </dependencies>
+</project>
