@@ -39,8 +39,8 @@ public class MyConnectionManager implements SourcelessConnectionManager {
         xaConnectionManager.setMaxWait(DEFAULT_MAX_WAIT);
         xaConnectionManager.setLdapName(serverName);
         xaConnectionManager.setDefaultSchemaName(resourceName);
-        xaConnectionManager.setJdbcUser("mftrackermaster");
-        xaConnectionManager.setJdbcPassword("master4mftracker");
+        xaConnectionManager.setJdbcUser("todo");
+        xaConnectionManager.setJdbcPassword("todo");
         xaConnectionManager.setPoolName("trackmyfunds connection pool");
         xaConnectionManager.setInitialSize(1);
         xaConnectionManager.setPoolSize(DEFAULT_POOL_SIZE);
