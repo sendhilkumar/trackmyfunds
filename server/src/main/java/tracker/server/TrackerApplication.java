@@ -2,14 +2,11 @@ package tracker.server;
 
 import com.gs.reladomo.serial.jackson.JacksonReladomoModule;
 import io.dropwizard.Application;
-import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.assets.WebAssetsBundle;
-import io.dropwizard.lifecycle.setup.ScheduledExecutorServiceBuilder;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import tracker.mithra.Mithra;
-
-import java.util.concurrent.ScheduledExecutorService;
 
 public class TrackerApplication extends Application<TrackerConfiguration> {
 
@@ -33,5 +30,6 @@ public class TrackerApplication extends Application<TrackerConfiguration> {
         environment.getObjectMapper().registerModule(new JacksonReladomoModule(true));
         environment.jersey().register(new TrackerService());
         environment.jersey().register(new PortfolioValueService());
+        environment.jersey().register(MultiPartFeature.class);
     }
 }

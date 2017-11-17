@@ -17,6 +17,7 @@ public class SchemeFinderByName {
     }
 
     public int find(String schemeNameFromTx) {
+        schemeNameFromTx = schemeNameFromTx.toLowerCase();
         schemeNameFromTx = schemeNameFromTx.substring(schemeNameFromTx.indexOf("-") + 1);
         int advisorIndex = schemeNameFromTx.indexOf("(advisor");
         if (advisorIndex != -1) {
@@ -43,7 +44,7 @@ public class SchemeFinderByName {
             if (schemeNameFromTx.equals(schemeName)) {
                 return FastList.newListWith(new Match(scheme.getCode(), schemeName, 0));
             }
-            Integer result = similarityScore.apply(schemeNameFromTx, schemeName);
+            Integer result = similarityScore.apply(schemeNameFromTx, simplify(schemeName.toLowerCase()));
             Match match = new Match(scheme.getCode(), schemeName, result);
             matches.add(match);
         }
@@ -53,7 +54,7 @@ public class SchemeFinderByName {
 
     private static String simplify(String schemeName) {
         schemeName = schemeName.replaceAll("-", " ");
-        schemeName = schemeName.replaceAll("fund", "fund");
+        schemeName = schemeName.replaceAll("fund", "");
         schemeName = schemeName.replaceAll("direct plan", "direct");
         schemeName = schemeName.replaceAll("growth plan", "growth");
         schemeName = schemeName.replaceAll("growth option", "growth");

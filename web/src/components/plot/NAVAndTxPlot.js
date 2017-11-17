@@ -47,11 +47,6 @@ class NAVAndTxPlot extends Component {
       const xScale = d3.scaleTime().domain([new Date(min_max_date.min), new Date(min_max_date.max)]).range([axisSize, plotWidth - axisSize]);
       const yScale = d3.scaleLinear().domain([min_max_nav.min, min_max_nav.max]).range([plotHeight - axisSize, axisSize]);
 
-      // const line = d3.line()
-      //   .x(function (d) { return xScale(d.date); })
-      //   .y(function (d) { return yScale(d.value); })
-      //   .curve(d3.curveLinear);
-
       const line = d3.area()
         .x(function (d) { return xScale(d.date); })
         .y1(function (d) { return yScale(d.value); })
@@ -59,7 +54,8 @@ class NAVAndTxPlot extends Component {
 
       const xAxis = d3.axisBottom()
         .scale(xScale)
-        .ticks(d3.timeMonth.every(1));
+        .ticks(d3.timeMonth.every(1))
+        .tickFormat(d3.timeFormat("%b"));
 
       const yAxis = d3.axisLeft()
         .scale(yScale)

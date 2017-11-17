@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import * as actions from '../actions';
 import Grid from './common/Grid';
 import NAVAndTxPlot from './plot/NAVAndTxPlot';
+import StatementUpload from './StatementUpload';
 
 class PortfolioCurrentValue extends Component {
 
@@ -32,87 +33,63 @@ class PortfolioCurrentValue extends Component {
       const returnPct = 100 * returns / cost;
 
       return <Row>
-        <Col md={12}>
-          <Row>
-            <Col md={12}>
-              <div className='app-header'>
-                <h3 style={{'-webkit-box-reflect': 'below 0 linear-gradient(rgba(0, 0, 0, 0), rgba(203, 24, 24, 0.08))'}}>
-                Track my funds
-                </h3>
-                </div>
-            </Col>
-          </Row>
-        </Col>
-        
-        <Col md={12} style={{top:'60px'}}>
-          <div style={{ padding: '15px' }}>
-            <Row>
-              <Col md={12}>
-                <div>
-                  <Row>
-                    <Col md={6}>
-                      <div style={{ backgroundColor: '#f5f5f5', padding: '10px', fontSize: '10px', boxShadow: '0 0 4px rgba(0,0,0,.4)' }}>
-                        <Grid
-                          data={currentPortfolioValue.portfolioValueOneDayDelta.schemeValues}
-                          subHeaders={currentPortfolioValue.portfolioValueOneDayDelta}
-                          columns={[
-                            {
-                              headerName: 'Scheme',
-                              valueFunction: lineItem => lineItem.scheme && lineItem.scheme.name,
-                              displayFunction: (value, lineItem) => <a style={{ cursor: 'pointer' }}
-                                onClick={() => this.selectScheme(lineItem.today)}>
-                                {value}
-                              </a>,
-                              valueDataType: 'text'
-                            },
-                            {
-                              headerName: 'Cost',
-                              valueFunction: lineItem => lineItem.today.cost,
-                              displayFunction: value => formatted(value)
-                            },
-                            {
-                              headerName: `Today value ${moment(currentPortfolioValue.portfolioValueOneDayDelta.today.asOfDate).format("DD-MMM-YYYY")}`,
-                              valueFunction: lineItem => lineItem.today.value,
-                              displayFunction: value => formatted(value)
-                            },
-                            {
-                              headerName: `1 day change in value`,
-                              valueFunction: lineItem => (lineItem.today.value - lineItem.today.cost) - (lineItem.prior.value - lineItem.prior.cost),
-                              displayFunction: value => formatted(value)
-                            },
-                            {
-                              headerName: `1 day change in value%`,
-                              valueFunction: lineItem => 100 * ((lineItem.today.value - lineItem.today.cost) - (lineItem.prior.value - lineItem.prior.cost)) / lineItem.prior.cost,
-                              displayFunction: value => formattedPercentage(value)
-                            },
-                            {
-                              headerName: `Return`,
-                              valueFunction: lineItem => lineItem.today.value - lineItem.today.cost,
-                              displayFunction: value => formatted(value)
-                            },
-                            {
-                              headerName: `XIRR`,
-                              valueFunction: lineItem => 100 * lineItem.today.xirr,
-                              displayFunction: value => formattedPercentage(value)
-                            }
-                          ]}
-                          rowKeyFunction={lineItem => lineItem.scheme.name} />
+        <Col md={6}>
+          <div style={{ backgroundColor: '#f5f5f5', padding: '2px', fontSize: '10px', boxShadow: '0 0 4px rgba(0,0,0,.4)', marginLeft: '-15px' }}>
+            <Grid
+              data={currentPortfolioValue.portfolioValueOneDayDelta.schemeValues}
+              subHeaders={currentPortfolioValue.portfolioValueOneDayDelta}
+              columns={[
+                {
+                  headerName: 'Scheme',
+                  valueFunction: lineItem => lineItem.scheme && lineItem.scheme.name,
+                  displayFunction: (value, lineItem) => <a style={{ cursor: 'pointer' }}
+                    onClick={() => this.selectScheme(lineItem.today)}>
+                    {value}
+                  </a>,
+                  valueDataType: 'text'
+                },
+                {
+                  headerName: 'Cost',
+                  valueFunction: lineItem => lineItem.today.cost,
+                  displayFunction: value => formatted(value)
+                },
+                {
+                  headerName: `Today value ${moment(currentPortfolioValue.portfolioValueOneDayDelta.today.asOfDate).format("DD-MMM-YYYY")}`,
+                  valueFunction: lineItem => lineItem.today.value,
+                  displayFunction: value => formatted(value)
+                },
+                {
+                  headerName: `1 day change in value`,
+                  valueFunction: lineItem => (lineItem.today.value - lineItem.today.cost) - (lineItem.prior.value - lineItem.prior.cost),
+                  displayFunction: value => formatted(value)
+                },
+                {
+                  headerName: `1 day change in value%`,
+                  valueFunction: lineItem => 100 * ((lineItem.today.value - lineItem.today.cost) - (lineItem.prior.value - lineItem.prior.cost)) / lineItem.prior.cost,
+                  displayFunction: value => formattedPercentage(value)
+                },
+                {
+                  headerName: `Return`,
+                  valueFunction: lineItem => lineItem.today.value - lineItem.today.cost,
+                  displayFunction: value => formatted(value)
+                },
+                {
+                  headerName: `XIRR`,
+                  valueFunction: lineItem => 100 * lineItem.today.xirr,
+                  displayFunction: value => formattedPercentage(value)
+                }
+              ]}
+              rowKeyFunction={lineItem => lineItem.scheme.name} />
 
-                      </div>
-                    </Col>
-
-                    <Col md={6} >
-                      {
-                        this.state.selectedLineItem && <NAVAndTxPlot lineItem={this.state.selectedLineItem} />
-                      }
-                    </Col>
-
-                  </Row>
-                </div>
-              </Col>
-            </Row>
           </div>
         </Col>
+
+        <Col md={6} style={{margin: '0px -15px'}}>
+          {
+            this.state.selectedLineItem && <NAVAndTxPlot lineItem={this.state.selectedLineItem} />
+          }
+        </Col>
+
       </Row>
     } else {
       return <div style={{ position: 'relative', height: '100vh' }}>

@@ -6,15 +6,20 @@ import com.gs.collections.api.map.MutableMap;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.AggregateList;
+import org.apache.commons.io.IOUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tracker.data.portfolio.loader.CASLoader;
 import tracker.domain.*;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;
@@ -26,6 +31,20 @@ public class PortfolioValueService {
     private static Logger logger = LoggerFactory.getLogger(PortfolioValueService.class.getName());
 
     private static final Function<Integer, SchemeValue> NEW_SCHEME = object -> new SchemeValue(SchemeFinder.findByPrimaryKey(object));
+
+    @POST
+    @Path("/upload")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public List<Transaction> upload(@FormDataParam("file") InputStream inputStream,
+                                    @FormDataParam("file") FormDataContentDisposition fileMetaData) throws IOException {
+
+        final File tempFile = File.createTempFile("statement", "pdf");
+        tempFile.deleteOnExit();
+        try (FileOutputStream out = new FileOutputStream(tempFile)) {
+            IOUtils.copy(inputStream, out);
+        }
+        return new CASLoader().loadStatement(tempFile, "Finz123SM");
+    }
 
     @Path("transactions")
     @GET

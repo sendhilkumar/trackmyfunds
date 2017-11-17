@@ -2,8 +2,6 @@ package tracker.server;
 
 import com.codahale.metrics.annotation.Timed;
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tracker.data.funds.loader.CurrentNAVLoader;
 import tracker.domain.*;
 
