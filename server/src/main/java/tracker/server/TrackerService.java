@@ -1,6 +1,7 @@
 package tracker.server;
 
 import com.codahale.metrics.annotation.Timed;
+import com.gs.collections.impl.list.mutable.FastList;
 import org.apache.lucene.queryparser.classic.ParseException;
 import tracker.data.funds.loader.CurrentNAVLoader;
 import tracker.domain.*;
@@ -30,7 +31,6 @@ public class TrackerService {
     public NAVLoad loadCurrentNAV() throws IOException {
         return new CurrentNAVLoader().load();
     }
-
 
     @Path("find/{schemeName}")
     @GET
@@ -75,15 +75,52 @@ public class TrackerService {
         return returns;
     }
 
-    private NetAssetValue getNetAssetValue(int schemeCode, Timestamp from, int amountToAdd, int fallbackCount) {
+    @Path("/{returnPeriods}")
+    @GET
+    @Timed
+    public List<SchemeReturns> getReturns(@PathParam("returnPeriods") String returnPeriods) {
+        String[] periods = returnPeriods.split(",");
+        List<ReturnPeriod> returnPeriodList = FastList.newList();
+        for (String period : periods) {
+            returnPeriodList.add(period(period.trim()));
+        }
+
+        SchemeList schemes = SchemeFinder.findMany(SchemeFinder.all());
+        List<SchemeReturns> allReturns = FastList.newList();
+        for (Scheme scheme : schemes) {
+            int schemeCode = scheme.getCode();
+            SchemeReturns returns = new SchemeReturns(scheme);
+
+            for (ReturnPeriod returnPeriod : returnPeriodList) {
+
+                NetAssetValue fromNAV = getNetAssetValue(schemeCode, returnPeriod.from, 1, 0);
+                NetAssetValue toNAV = getNetAssetValue(schemeCode, returnPeriod.to, -1, 0);
+
+                if (fromNAV != null && toNAV != null) {
+                    if (returnPeriod.numYears > 1) {
+                        double cagr = 100 * (Math.pow(toNAV.getNetAssetValue() / fromNAV.getNetAssetValue(), 1 / returnPeriod.numYears) - 1);
+                        returns.addReturn(returnPeriod.period, cagr);
+                    } else {
+                        double pct = 100 * (toNAV.getNetAssetValue() - fromNAV.getNetAssetValue()) / fromNAV.getNetAssetValue();
+                        returns.addReturn(returnPeriod.period, pct);
+                    }
+                }
+            }
+            allReturns.add(returns);
+        }
+        return allReturns;
+    }
+
+    private NetAssetValue getNetAssetValue(int schemeCode, Timestamp from, int fallbackDirection, int fallbackCounter) {
         NetAssetValue fromNAV = NetAssetValueFinder.findByPrimaryKey(schemeCode, from);
         if (fromNAV == null) {
-            if (fallbackCount < 10) {
-                from = Timestamp.valueOf(from.toLocalDateTime().plus(amountToAdd, ChronoUnit.DAYS));
-                return getNetAssetValue(schemeCode, from, amountToAdd, fallbackCount + 1);
+            if (fallbackCounter < 10) {
+                from = Timestamp.valueOf(from.toLocalDateTime().plus(fallbackDirection, ChronoUnit.DAYS));
+                return getNetAssetValue(schemeCode, from, fallbackDirection, fallbackCounter + 1);
             } else {
-                throw new RuntimeException("Cant find NAV of scheme " + schemeCode + " as of " + from.toString());
+//                throw new RuntimeException("Cant find NAV of scheme " + schemeCode + " as of " + from.toString());
                 //todo: check scheme start date
+                return null;
             }
         }
         return fromNAV;
@@ -121,7 +158,7 @@ public class TrackerService {
             }
 
             Timestamp from = Timestamp.valueOf(today.toLocalDateTime().minus(length, unit));
-            return new ReturnPeriod(from, today, divideBy);
+            return new ReturnPeriod(period, from, today, divideBy);
         }
 
         if (period.contains("to")) {
@@ -137,7 +174,7 @@ public class TrackerService {
                         between.getDays();
                 divideBy = days / 365;
             }
-            return new ReturnPeriod(from, to, divideBy);
+            return new ReturnPeriod(period, from, to, divideBy);
         }
 
         if (period.length() == 4) { //year
@@ -146,18 +183,20 @@ public class TrackerService {
             if (to.after(Timestamp.from(Instant.now()))) {
                 to = Timestamp.valueOf(Timestamp.from(Instant.now()).toLocalDateTime().toLocalDate().atStartOfDay());
             }
-            return new ReturnPeriod(from, to, 1);
+            return new ReturnPeriod(period, from, to, 1);
         }
 
         throw new RuntimeException("Unknown period " + period);
     }
 
     private static class ReturnPeriod {
+        private final String period;
         private final Timestamp from;
         private final Timestamp to;
         private final double numYears;
 
-        private ReturnPeriod(Timestamp from, Timestamp to, double numYears) {
+        private ReturnPeriod(String period, Timestamp from, Timestamp to, double numYears) {
+            this.period = period;
             this.from = from;
             this.to = to;
             this.numYears = numYears;

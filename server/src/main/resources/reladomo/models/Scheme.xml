@@ -8,4 +8,8 @@
     <Attribute name="amc" javaType="String" columnName="amc" maxLength="500" nullable="false"/>
     <Attribute name="rtaCode" javaType="String" columnName="rta_code" maxLength="50" nullable="true"/>
 
+    <Relationship name="portfolio" relatedObject="Portfolio" cardinality="many-to-one">
+        Portfolio.id = PortfolioHolding.portfolioId and
+        PortfolioHolding.schemeCode = this.code
+    </Relationship>
 </MithraObject>

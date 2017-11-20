@@ -65,7 +65,7 @@ export default class Grid extends Component {
             (column) =>
                 <div
                     key={column.headerName}
-                    className={`grid-header ${getCellClassName(column.valueDataType)}`}
+                    className={`grid-header ${getCellClassName(column.valueDataType)} ${column.className}`}
                     style={{ cursor: 'pointer' }} onClick={() => this.sort(column)}>
                     {column.headerName}
                 </div>

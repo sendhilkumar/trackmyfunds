@@ -26,71 +26,82 @@ class PortfolioCurrentValue extends Component {
 
   render() {
     const currentPortfolioValue = this.props.currentPortfolioValue;
-    if (currentPortfolioValue.portfolioValueOneDayDelta) {
+    if (currentPortfolioValue && currentPortfolioValue.portfolioValueOneDayDelta) {
       const cost = currentPortfolioValue.portfolioValueOneDayDelta.today.cost
       const value = currentPortfolioValue.portfolioValueOneDayDelta.today.value;
       const returns = value - cost;
       const returnPct = 100 * returns / cost;
 
-      return <Row>
-        <Col md={6}>
-          <div style={{ backgroundColor: '#f5f5f5', padding: '2px', fontSize: '10px', boxShadow: '0 0 4px rgba(0,0,0,.4)', marginLeft: '-15px' }}>
-            <Grid
-              data={currentPortfolioValue.portfolioValueOneDayDelta.schemeValues}
-              subHeaders={currentPortfolioValue.portfolioValueOneDayDelta}
-              columns={[
-                {
-                  headerName: 'Scheme',
-                  valueFunction: lineItem => lineItem.scheme && lineItem.scheme.name,
-                  displayFunction: (value, lineItem) => <a style={{ cursor: 'pointer' }}
-                    onClick={() => this.selectScheme(lineItem.today)}>
-                    {value}
-                  </a>,
-                  valueDataType: 'text'
-                },
-                {
-                  headerName: 'Cost',
-                  valueFunction: lineItem => lineItem.today.cost,
-                  displayFunction: value => formatted(value)
-                },
-                {
-                  headerName: `Today value ${moment(currentPortfolioValue.portfolioValueOneDayDelta.today.asOfDate).format("DD-MMM-YYYY")}`,
-                  valueFunction: lineItem => lineItem.today.value,
-                  displayFunction: value => formatted(value)
-                },
-                {
-                  headerName: `1 day change in value`,
-                  valueFunction: lineItem => (lineItem.today.value - lineItem.today.cost) - (lineItem.prior.value - lineItem.prior.cost),
-                  displayFunction: value => formatted(value)
-                },
-                {
-                  headerName: `1 day change in value%`,
-                  valueFunction: lineItem => 100 * ((lineItem.today.value - lineItem.today.cost) - (lineItem.prior.value - lineItem.prior.cost)) / lineItem.prior.cost,
-                  displayFunction: value => formattedPercentage(value)
-                },
-                {
-                  headerName: `Return`,
-                  valueFunction: lineItem => lineItem.today.value - lineItem.today.cost,
-                  displayFunction: value => formatted(value)
-                },
-                {
-                  headerName: `XIRR`,
-                  valueFunction: lineItem => 100 * lineItem.today.xirr,
-                  displayFunction: value => formattedPercentage(value)
-                }
-              ]}
-              rowKeyFunction={lineItem => lineItem.scheme.name} />
+      const backgroundColor = portfolioNameHeaderColors[this.props.params.portfolioId % 2];
 
-          </div>
-        </Col>
+      return <div>
+        <Row>
+          <Col mdOffset={3} md={6}>
 
-        <Col md={6} style={{margin: '0px -15px'}}>
-          {
-            this.state.selectedLineItem && <NAVAndTxPlot lineItem={this.state.selectedLineItem} />
-          }
-        </Col>
+            <div style={{ backgroundColor, color: 'rgb(245, 245, 245)', padding: '4px 6px 4px 4px', fontSize: '13px', fontWeight: 'bold', boxShadow: '0 0 4px rgba(0,0,0,.4)'}}>
+              <span>{this.props.params.portfolioName}</span>
+            </div>
 
-      </Row>
+            <div style={{ backgroundColor: '#f5f5f5', fontSize: '10px', boxShadow: '0 0 4px rgba(0,0,0,.4)' }}>
+              <Grid
+                data={this.props.subHeadersOnly ? [] : currentPortfolioValue.portfolioValueOneDayDelta.schemeValues}
+                subHeaders={currentPortfolioValue.portfolioValueOneDayDelta}
+                columns={[
+                  {
+                    headerName: this.props.subHeadersOnly ? '' : 'Scheme',
+                    valueFunction: lineItem => lineItem.scheme && lineItem.scheme.name,
+                    displayFunction: (value, lineItem) => <a style={{ cursor: 'pointer' }}
+                      onClick={() => this.selectScheme(lineItem.today)}>
+                      {value}
+                    </a>,
+                    valueDataType: 'text',
+                    className: 'scheme-name-in-grid'
+                  },
+                  {
+                    headerName: 'Cost',
+                    valueFunction: lineItem => lineItem.today.cost,
+                    displayFunction: value => formatted(value)
+                  },
+                  {
+                    headerName: `Today value ${moment(currentPortfolioValue.portfolioValueOneDayDelta.today.asOfDate).format("DD-MMM-YYYY")}`,
+                    valueFunction: lineItem => lineItem.today.value,
+                    displayFunction: value => formatted(value)
+                  },
+                  {
+                    headerName: `1 day change in value`,
+                    valueFunction: lineItem => (lineItem.today.value - lineItem.today.cost) - (lineItem.prior.value - lineItem.prior.cost),
+                    displayFunction: value => formatted(value)
+                  },
+                  {
+                    headerName: `1 day change in value%`,
+                    valueFunction: lineItem => 100 * ((lineItem.today.value - lineItem.today.cost) - (lineItem.prior.value - lineItem.prior.cost)) / lineItem.prior.cost,
+                    displayFunction: value => formattedPercentage(value)
+                  },
+                  {
+                    headerName: `Return`,
+                    valueFunction: lineItem => lineItem.today.value - lineItem.today.cost,
+                    displayFunction: value => formatted(value)
+                  },
+                  {
+                    headerName: `XIRR`,
+                    valueFunction: lineItem => 100 * lineItem.today.xirr,
+                    displayFunction: value => formattedPercentage(value)
+                  }
+                ]}
+                rowKeyFunction={lineItem => lineItem.scheme.name} />
+
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col mdOffset={3} md={6} style={{marginTop:'15px'}}>
+            {
+              this.state.selectedLineItem && <NAVAndTxPlot lineItem={this.state.selectedLineItem} />
+            }
+          </Col>
+
+        </Row>
+      </div>
     } else {
       return <div style={{ position: 'relative', height: '100vh' }}>
         <div style={{
@@ -112,7 +123,7 @@ const formatted = value => new Intl.NumberFormat('en-IN', { maximumFractionDigit
 const formattedPercentage = value => new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value);
 
 const mapStateToProps = (state, ownProps) => {
-  const currentPortfolioValue = state.currentPortfolioValue;
+  const currentPortfolioValue = state.currentPortfolioValue[ownProps.params.portfolioId];
   return {
     currentPortfolioValue
   }
@@ -125,6 +136,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
   }
 }
+const portfolioNameHeaderColors = ['#3F51B5', '#4caf50'];
 
 export default connect(
   mapStateToProps,

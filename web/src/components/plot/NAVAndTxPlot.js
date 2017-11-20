@@ -177,7 +177,9 @@ class NAVAndTxPlot extends Component {
 const formatted = value => new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(value);
 
 const mapStateToProps = (state, ownProps) => {
-  const navPlotData = state.hist.map(navEntry => { return { date: new Date(moment(navEntry.date)), value: navEntry.netAssetValue } });
+  const schemeCode = ownProps.lineItem ? ownProps.lineItem.scheme.code : ownProps.params.fundId;
+  const hist = state.hist[schemeCode];
+  const navPlotData = hist && hist.map(navEntry => { return { date: new Date(moment(navEntry.date)), value: navEntry.netAssetValue } });
   return {
     navPlotData: navPlotData
   }

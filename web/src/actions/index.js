@@ -26,9 +26,32 @@ export const getHistory = (fundId) =>{
 export const getPortfolioCurrentValue =(portfolioId) => {
   return {
     [CALL_API]: {
-      endpoint: `/api/portfolio/today/${portfolioId}`,
+      endpoint: `/api/portfolio/${portfolioId}/today`,
       method: 'GET',
-      types: ['REQUEST', 'SUCCESS', 'FAILURE']
+      types: [
+        {
+          type: 'REQUEST_PORTFOLIO_VALUE',
+          meta: { portfolioId: portfolioId }
+        },
+        {
+          type: 'SUCCESS_PORTFOLIO_VALUE',
+          meta: { portfolioId: portfolioId }
+        },
+        {
+          type: 'FAILURE_PORTFOLIO_VALUE',
+          meta: { portfolioId: portfolioId }
+        }
+     ]
+    }
+  }
+}
+
+export const getPortfolios =() => {
+  return {
+    [CALL_API]: {
+      endpoint: `/api/portfolio/subportfolios`,
+      method: 'GET',
+      types: ['REQUEST_PORTFOLIOS', 'SUCCESS_PORTFOLIOS', 'FAILURE_PORTFOLIOS']
     }
   }
 }

@@ -19,6 +19,7 @@ public class NAVDownloader {
         download(from, to);
     }
 
+    //2006-01-01 to
     public File download(String from, String to) throws IOException {
         URL url = new URL("http://portal.amfiindia.com/DownloadNAVHistoryReport_Po.aspx?tp=1&frmdt=" + from + "&todt=" + to);
         logger.info(url.toString());

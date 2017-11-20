@@ -1,12 +1,12 @@
 <MithraRuntime>
     <ConnectionManager className="tracker.mithra.MyConnectionManager">
-        <MithraObjectConfiguration className="tracker.domain.NetAssetValue" cacheType="partial"/>
-        <MithraObjectConfiguration className="tracker.domain.NAVLoad" cacheType="partial"/>
-        <MithraObjectConfiguration className="tracker.domain.Scheme" cacheType="partial"/>
-        <MithraObjectConfiguration className="tracker.domain.Transaction" cacheType="partial"/>
-        <MithraObjectConfiguration className="tracker.domain.LatestNAVDate" cacheType="partial"/>
-        <MithraObjectConfiguration className="tracker.domain.Portfolio" cacheType="partial"/>
-        <MithraObjectConfiguration className="tracker.domain.PortfolioHolding" cacheType="partial"/>
+        <MithraObjectConfiguration className="tracker.domain.NetAssetValue" cacheType="full"/>
+        <MithraObjectConfiguration className="tracker.domain.NAVLoad" cacheType="full"/>
+        <MithraObjectConfiguration className="tracker.domain.Scheme" cacheType="full"/>
+        <MithraObjectConfiguration className="tracker.domain.Transaction" cacheType="full"/>
+        <MithraObjectConfiguration className="tracker.domain.LatestNAVDate" cacheType="full"/>
+        <MithraObjectConfiguration className="tracker.domain.Portfolio" cacheType="full"/>
+        <MithraObjectConfiguration className="tracker.domain.PortfolioHolding" cacheType="full"/>
     </ConnectionManager>
 
 </MithraRuntime>
