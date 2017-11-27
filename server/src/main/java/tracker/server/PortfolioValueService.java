@@ -107,11 +107,13 @@ public class PortfolioValueService {
         List<SchemeValue> schemeValues = FastList.newList();
         for (Map.Entry<Integer, SchemeValue> entry : unitsBySchemes.entrySet()) {
             SchemeValue schemeValue = entry.getValue();
-            calculateSchemeValue(schemeValue, asOfDate);
+            if (schemeValue.getUnits() > 0.001) { //Filtering 0 unit schemes
+                calculateSchemeValue(schemeValue, asOfDate);
 
-            schemeValues.add(schemeValue);
-            totalValue += schemeValue.getValue();
-            totalCost += schemeValue.getCost();
+                schemeValues.add(schemeValue);
+                totalValue += schemeValue.getValue();
+                totalCost += schemeValue.getCost();
+            }
         }
         schemeValues.sort(Comparator.comparing(o -> o.getScheme().getName()));
         return new PortfolioValue(asOfDate, schemeValues, totalCost, totalValue);

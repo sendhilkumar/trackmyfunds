@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.gs.collections.impl.list.mutable.FastList;
 import org.apache.lucene.queryparser.classic.ParseException;
 import tracker.data.funds.loader.CurrentNAVLoader;
+import tracker.data.funds.loader.HistoricalNAVLoader;
 import tracker.domain.*;
 
 import javax.ws.rs.*;
@@ -62,13 +63,14 @@ public class TrackerService {
 
             NetAssetValue fromNAV = getNetAssetValue(schemeCode, returnPeriod.from, 1, 0);
             NetAssetValue toNAV = getNetAssetValue(schemeCode, returnPeriod.to, -1, 0);
-
-            if (returnPeriod.numYears > 1) {
-                double cagr = 100 * (Math.pow(toNAV.getNetAssetValue() / fromNAV.getNetAssetValue(), 1 / returnPeriod.numYears) - 1);
-                returns.addReturn(period, cagr);
-            } else {
-                double pct = 100 * (toNAV.getNetAssetValue() - fromNAV.getNetAssetValue()) / fromNAV.getNetAssetValue();
-                returns.addReturn(period, pct);
+            if (fromNAV != null && toNAV != null) {
+                if (returnPeriod.numYears > 1) {
+                    double cagr = 100 * (Math.pow(toNAV.getNetAssetValue() / fromNAV.getNetAssetValue(), 1 / returnPeriod.numYears) - 1);
+                    returns.addReturn(period, cagr);
+                } else {
+                    double pct = 100 * (toNAV.getNetAssetValue() - fromNAV.getNetAssetValue()) / fromNAV.getNetAssetValue();
+                    returns.addReturn(period, pct);
+                }
             }
         }
 

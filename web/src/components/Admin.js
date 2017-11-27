@@ -19,24 +19,16 @@ class Admin extends Component {
             <Col md={12}>
                 <Row>
                     <Col md={12}>
-                        <div style={{ padding: '0px 0px 10px 0px', fontSize: '20px', color: '#f5f5f5' }}>
-                            Track my funds
+                        <div style={{ padding: '0px 0px 10px 0px'}}>
+                            <Button bsStyle="primary" bsSize="large" onClick={() => this.loadCurrentNAV()}>Load current NAV</Button>
                         </div>
                     </Col>
                 </Row>
 
                 <Row>
                     <Col md={12}>
-                        <div style={{ padding: '0px 0px 10px 0px', fontSize: '16px', color: '#f5f5f5' }}>
-                            Admin
-                            </div>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col md={12}>
                         <div style={{ padding: '0px 0px 10px 0px'}}>
-                            <Button bsStyle="primary" bsSize="large" onClick={() => this.loadCurrentNAV()}>Load current NAV</Button>
+                            <Button bsStyle="primary" bsSize="large" onClick={() => this.loadNAV()}>Load current NAV</Button>
                         </div>
                     </Col>
                 </Row>
@@ -68,6 +60,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         loadCurrentNAV: () => {
             dispatch(actions.loadCurrentNAV())
+        },
+        loadNAV: (from, to) => {
+            dispatch(actions.loadNAV())
         }
     }
 }

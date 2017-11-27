@@ -24,6 +24,7 @@ public class CurrentNAVLoader {
     //todo: holiday list or lookup
     //run this at 9:15PM on weekdays; whatever the max date in the data, assume that to be latest date;
     public static void main(String[] args) throws IOException {
+        Mithra.init();
         new CurrentNAVLoader().load();
     }
 
@@ -31,8 +32,6 @@ public class CurrentNAVLoader {
         Timestamp currentTime = Timestamp.from(Instant.now());
 
         File download = new NAVDownloader().downloadCurrent();
-
-        Mithra.init();
 
         final NetAssetValueList navRecords = new NetAssetValueList();
         UnifiedMap<Timestamp, MutableInteger> countMap = UnifiedMap.newMap();

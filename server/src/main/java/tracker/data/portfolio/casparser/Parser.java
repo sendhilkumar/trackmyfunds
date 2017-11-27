@@ -22,12 +22,13 @@ public class Parser {
     private static final String SPECIAL_TRANSACTION = "***";
     private static final String WORD_SEPARATOR = ";";
     private static final String CAS_UPLOAD = "cas upload";
-    private static final DecimalFormat decimalFormat = new DecimalFormat("#,##0.0#;(#)");
+    private static final DecimalFormat decimalFormat1 = new DecimalFormat("#,##0.0#;(#)");
+    private static final DecimalFormat decimalFormat2 = new DecimalFormat("#,##0.0#;-#,##0.0#");
     private static final String FOLIO_NO = "Folio No:";
     private static final String REGISTRAR = "Registrar :";
 
     public List<Transaction> parse(File file, String password) throws IOException {
-        logger.info("Loading "+file.toPath());
+        logger.info("Loading " + file.toPath());
         List<Transaction> transactions = new ArrayList<>();
 
         PDDocument doc = PDDocument.load(file, password);
@@ -40,7 +41,7 @@ public class Parser {
         pdfTextStripper.setSortByPosition(true);
 
         String text = pdfTextStripper.getText(doc);
-//        logger.info(text);
+        logger.info(text);
 
         String rtaCode = null;
         String schemeName = null;
@@ -52,10 +53,10 @@ public class Parser {
             if (line.contains(REGISTRAR)) { // || line.contains("Advisor")
 //                logger.info(line);
 
-                String[] words = line.trim().split(WORD_SEPARATOR);
+                String[] words = line.trim().split(REGISTRAR);
                 schemeName = words[0];
                 rtaCode = schemeName.substring(0, line.indexOf('-'));
-                registrar = words[1].substring(REGISTRAR.length()).trim();
+                registrar = words[1];
 
             } else if (line.contains(FOLIO_NO)) {
 //                logger.info(line);
@@ -92,9 +93,13 @@ public class Parser {
 
     private static double parseDouble(String word) {
         try {
-            return decimalFormat.parse(word).doubleValue();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return decimalFormat1.parse(word).doubleValue();
+        } catch (ParseException e1) {
+            try {
+               return decimalFormat2.parse(word).doubleValue();
+            } catch (ParseException e2) {
+                throw new RuntimeException(e2);
+            }
         }
     }
 

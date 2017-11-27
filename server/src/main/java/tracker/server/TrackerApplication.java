@@ -30,6 +30,7 @@ public class TrackerApplication extends Application<TrackerConfiguration> {
         environment.getObjectMapper().registerModule(new JacksonReladomoModule(true));
         environment.jersey().register(new TrackerService());
         environment.jersey().register(new PortfolioValueService());
+        environment.jersey().register(new AdminService());
         environment.jersey().register(MultiPartFeature.class);
     }
 }

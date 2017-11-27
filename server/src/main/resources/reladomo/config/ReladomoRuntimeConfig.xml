@@ -1,6 +1,6 @@
 <MithraRuntime>
     <ConnectionManager className="tracker.mithra.MyConnectionManager">
-        <MithraObjectConfiguration className="tracker.domain.NetAssetValue" cacheType="full"/>
+        <MithraObjectConfiguration className="tracker.domain.NetAssetValue" cacheType="partial"/>
         <MithraObjectConfiguration className="tracker.domain.NAVLoad" cacheType="full"/>
         <MithraObjectConfiguration className="tracker.domain.Scheme" cacheType="full"/>
         <MithraObjectConfiguration className="tracker.domain.Transaction" cacheType="full"/>

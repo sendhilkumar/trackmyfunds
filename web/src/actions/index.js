@@ -66,3 +66,13 @@ export const loadCurrentNAV =() => {
   }
 }
 
+export const loadNAV =(from, to) => {
+  return {
+    [CALL_API]: {
+      endpoint: `/api/admin/loadNAV?from=${from}&to=${to}`,
+      method: 'POST',
+      types: ['REQUEST_LOAD_NAV', 'SUCCESS_LOAD_NAV', 'FAILURE_LOAD_NAV']
+    }
+  }
+}
+

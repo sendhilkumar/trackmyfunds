@@ -1,6 +1,7 @@
 package tracker.data.funds.navparser;
 
 import com.gs.collections.impl.set.mutable.UnifiedSet;
+import com.gs.fw.common.mithra.bulkloader.SybaseIqDoubleFormatter;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,12 +11,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.NumberFormat;
+import java.util.Formatter;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 public class HistoricalNAVParser {
     private Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-
+    private static final Pattern PATTERN = Pattern.compile(",");
     private static final String DELIMITER = ";";
     private Set<String> NA_STRINGS = UnifiedSet.newSetWith("N.A.", "-", "#DIV/0!","#N/A", "NA");
 
@@ -53,7 +57,6 @@ public class HistoricalNAVParser {
         if (NA_STRINGS.contains(string)) {
             return Double.NaN;
         }
-
-        return Double.valueOf(string.replaceAll(",",""));
+        return Double.valueOf(PATTERN.matcher(string).replaceAll(""));
     }
 }
