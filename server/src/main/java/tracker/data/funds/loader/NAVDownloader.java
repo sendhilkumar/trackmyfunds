@@ -1,6 +1,7 @@
 package tracker.data.funds.loader;
 
 import org.apache.commons.io.FileUtils;
+import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,9 +10,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class NAVDownloader {
     private Logger logger = LoggerFactory.getLogger(NAVDownloader.class.getName());
+    private final org.joda.time.format.DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyyMMdd");
 
     public void downloadYear(String year) throws IOException {
         String from = "01-Jan-" + year;
@@ -32,7 +35,7 @@ public class NAVDownloader {
         URL url = new URL("https://www.amfiindia.com/spages/NAVOpen.txt");
         logger.info("Downloading " + url);
         String fileName = "NAVOpen_" + LocalDate.now().toString();
-        File file = Files.createTempFile(fileName,"txt").toFile();
+        File file = Files.createTempFile(fileName, "txt").toFile();
         FileUtils.copyURLToFile(url, file);
         logger.info("Downloaded " + file.toString());
         return file;

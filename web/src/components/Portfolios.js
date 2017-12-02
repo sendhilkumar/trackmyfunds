@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import * as actions from '../actions';
 import PortfolioCurrentValue from './PortfolioCurrentValue';
+import PortfolioHistory from './PortfolioHistory';
 
 class Portfolios extends Component {
     componentDidMount() {
@@ -12,12 +13,17 @@ class Portfolios extends Component {
     render() {
         const keys = Object.keys(this.props.portfolios);
         return <div>
+            <Row>
+                <Col mdOffset={3} md={6}>
+                    <PortfolioHistory />
+                </Col>
+            </Row>
 
-        <Row>
-            <Col xs={12} md={12} style={{ margin: '10px 0px 10px 10px' }}>
-                <PortfolioCurrentValue subHeadersOnly ={true} params={{ portfolioId: 0, portfolioName: 'All' }} />
-            </Col>
-        </Row>
+            <Row>
+                <Col xs={12} md={12} style={{ margin: '10px 0px 10px 10px' }}>
+                    <PortfolioCurrentValue subHeadersOnly={true} params={{ portfolioId: 0, portfolioName: 'All' }} />
+                </Col>
+            </Row>
 
             {
                 keys.map(key => <Row key={this.props.portfolios[key].id}>

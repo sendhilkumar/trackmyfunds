@@ -12,6 +12,7 @@ import 'bootstrap/dist/css/bootstrap-theme.css';
 import './index.css';
 
 import PortfolioCurrentValue from './components/PortfolioCurrentValue';
+import PortfolioHistory from './components/PortfolioHistory';
 import Portfolios from './components/Portfolios';
 import NAVAndTxPlot from './components/plot/NAVAndTxPlot';
 import Admin from './components/Admin';
@@ -22,12 +23,14 @@ import hist from './reducers/hist'
 import currentPortfolioValue from './reducers/currentPortfolioValue'
 import currentNAVLoad from './reducers/currentNAVLoad'
 import portfolios from './reducers/portfolios'
+import portfolioHistory from './reducers/portfolioHistory'
 
 const reducers = combineReducers({
   hist,
   currentPortfolioValue,
   currentNAVLoad,
   portfolios,
+  portfolioHistory,
   routing: routerReducer
 })
 
@@ -48,6 +51,7 @@ render(
         <Route path="current/:portfolioId" component={PortfolioCurrentValue} />
         <Route path="history/:fundId" component={NAVAndTxPlot} />
         <Route path="admin" component={Admin} />
+        <Route path="history" component={PortfolioHistory} />
 
       </Route>
     </Router>

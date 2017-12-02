@@ -19,7 +19,6 @@ export default class NAVDataPoint extends Component {
 
     const xCoord = this.props.xScale(this.props.navData.date);
     const xCoordNextDataPoint = this.props.nextData ? this.props.xScale(this.props.nextData.date) : xCoord + 10;
-    const yCoord = this.props.yScale(this.props.navData.value);
 
     return <g>
       <rect

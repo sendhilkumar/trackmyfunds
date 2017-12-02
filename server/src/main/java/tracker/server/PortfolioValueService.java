@@ -10,6 +10,7 @@ import com.gs.fw.common.mithra.finder.Operation;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tracker.data.portfolio.loader.CASLoader;
@@ -22,13 +23,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Path("/portfolio")
 @Produces(MediaType.APPLICATION_JSON)
 public class PortfolioValueService {
+    private static final String PASSWORD = "Finz123SM";
     private static Logger logger = LoggerFactory.getLogger(PortfolioValueService.class.getName());
 
     private static final Function<Integer, SchemeValue> NEW_SCHEME = object -> new SchemeValue(SchemeFinder.findByPrimaryKey(object));
@@ -44,7 +47,7 @@ public class PortfolioValueService {
         try (FileOutputStream out = new FileOutputStream(tempFile)) {
             IOUtils.copy(inputStream, out);
         }
-        return new CASLoader().loadStatement(tempFile, "Finz123SM");
+        return new CASLoader().loadStatement(tempFile, PASSWORD);
     }
 
     @Path("subportfolios")
@@ -84,6 +87,35 @@ public class PortfolioValueService {
         return TransactionFinder.findMany(operation);
     }
 
+    @Path("{portfolioId}/history")
+    @GET
+    @Timed
+    public Map<Timestamp, PortfolioValue> getPortfolioHistory(@PathParam("portfolioId") int portfolioId) {
+
+        TransactionList transactions = TransactionFinder.findMany(TransactionFinder.scheme().portfolio().id().eq(portfolioId));
+        transactions.addOrderBy(TransactionFinder.date().ascendingOrderBy());
+        Map<Timestamp, PortfolioValue> history = new TreeMap<>();
+        if (transactions.size() > 0) {
+            Transaction firstTransaction = transactions.get(0);
+            LocalDateTime firstTransactionDate = firstTransaction.getDate().toLocalDateTime();
+            LocalDateTime now = LocalDateTime.now();
+
+            LocalDateTime asOfDate = firstTransactionDate;
+            while (asOfDate.isBefore(now)) {
+                Timestamp timestamp = Timestamp.valueOf(asOfDate);
+                boolean weekend = asOfDate.getDayOfWeek() == DayOfWeek.SATURDAY || asOfDate.getDayOfWeek() == DayOfWeek.SUNDAY;
+                if(!weekend) {
+                    PortfolioValue portfolioValue = calculatePortfolioValue(timestamp, portfolioId);
+                    history.put(timestamp, portfolioValue);
+                }
+                asOfDate = asOfDate.plusDays(1);
+            }
+
+            return history;
+        } else
+            return new HashMap<>();
+    }
+
     @Path("{portfolioId}/{asOfDate}/value")
     @GET
     @Timed
@@ -94,18 +126,18 @@ public class PortfolioValueService {
     private PortfolioValue calculatePortfolioValue(Timestamp asOfDate, int portfolio) {
         TransactionList transactions = getTransactions(asOfDate, portfolio);
 
-        MutableMap<Integer, SchemeValue> unitsBySchemes = UnifiedMap.newMap();
+        MutableMap<Integer, SchemeValue> bySchemeCode = UnifiedMap.newMap();
         double totalValue = 0.0;
         double totalCost = 0.0;
 
         for (Transaction transaction : transactions) {
             int schemeCode = transaction.getSchemeCode();
-            SchemeValue schemeValue = unitsBySchemes.getIfAbsentPutWith(schemeCode, NEW_SCHEME, schemeCode);
+            SchemeValue schemeValue = bySchemeCode.getIfAbsentPutWith(schemeCode, NEW_SCHEME, schemeCode);
             schemeValue.addTransaction(transaction);
         }
 
         List<SchemeValue> schemeValues = FastList.newList();
-        for (Map.Entry<Integer, SchemeValue> entry : unitsBySchemes.entrySet()) {
+        for (Map.Entry<Integer, SchemeValue> entry : bySchemeCode.entrySet()) {
             SchemeValue schemeValue = entry.getValue();
             if (schemeValue.getUnits() > 0.001) { //Filtering 0 unit schemes
                 calculateSchemeValue(schemeValue, asOfDate);

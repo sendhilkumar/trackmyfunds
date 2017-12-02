@@ -46,6 +46,16 @@ export const getPortfolioCurrentValue =(portfolioId) => {
   }
 }
 
+export const getPortfolioHistory =() => {
+  return {
+    [CALL_API]: {
+      endpoint: `/api/portfolio/1/history`,
+      method: 'GET',
+      types: ['REQUEST_PORTFOLIO_HISTORY', 'SUCCESS_PORTFOLIO_HISTORY', 'FAILURE_PORTFOLIO_HISTORY']
+    }
+  }
+}
+
 export const getPortfolios =() => {
   return {
     [CALL_API]: {

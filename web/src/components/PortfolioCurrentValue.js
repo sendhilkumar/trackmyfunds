@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Navbar } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import * as moment from 'moment';
 import * as actions from '../actions';
 import Grid from './common/Grid';
 import NAVAndTxPlot from './plot/NAVAndTxPlot';
-import StatementUpload from './StatementUpload';
 
 class PortfolioCurrentValue extends Component {
 
@@ -30,7 +29,7 @@ class PortfolioCurrentValue extends Component {
       const cost = currentPortfolioValue.portfolioValueOneDayDelta.today.cost
       const value = currentPortfolioValue.portfolioValueOneDayDelta.today.value;
       const returns = value - cost;
-      const returnPct = 100 * returns / cost;
+      // const returnPct = 100 * returns / cost;
 
       const backgroundColor = portfolioNameHeaderColors[this.props.params.portfolioId % 2];
 
