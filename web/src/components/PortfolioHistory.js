@@ -45,8 +45,8 @@ class PortfolioHistory extends Component {
 
       const xAxis = d3.axisBottom()
         .scale(xScale)
-        .ticks(d3.timeMonth.every(1))
-        .tickFormat(d3.timeFormat("%b"));
+        .ticks(d3.timeMonday.every(2))
+        .tickFormat(d3.timeFormat("%d/%m/%y"));
 
       const yAxis = d3.axisLeft()
         .scale(yScale)
@@ -56,7 +56,7 @@ class PortfolioHistory extends Component {
       return <div>
         <Row>
           <Col mdOffset={1} md={10}>
-            <svg width={plotWidth} height={plotHeight}>
+            <svg viewBox={`0 0 ${plotWidth} ${plotHeight}`} >
               <Axis axisType="x" axis={xAxis} translate={{ x: 0, y: plotHeight - axisSize }} />
               <Axis axisType="y" axis={yAxis} translate={{ x: axisSize, y: 0 }} />
 

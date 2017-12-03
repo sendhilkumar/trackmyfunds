@@ -92,8 +92,10 @@ public class PortfolioValueService {
     @Timed
     public Map<Timestamp, PortfolioValue> getPortfolioHistory(@PathParam("portfolioId") int portfolioId) {
 
-        TransactionList transactions = TransactionFinder.findMany(TransactionFinder.scheme().portfolio().id().eq(portfolioId));
+        Operation operation = portfolioId == 0 ? TransactionFinder.all() : TransactionFinder.scheme().portfolio().id().eq(portfolioId);
+        TransactionList transactions = TransactionFinder.findMany(operation);
         transactions.addOrderBy(TransactionFinder.date().ascendingOrderBy());
+
         Map<Timestamp, PortfolioValue> history = new TreeMap<>();
         if (transactions.size() > 0) {
             Transaction firstTransaction = transactions.get(0);
@@ -104,7 +106,7 @@ public class PortfolioValueService {
             while (asOfDate.isBefore(now)) {
                 Timestamp timestamp = Timestamp.valueOf(asOfDate);
                 boolean weekend = asOfDate.getDayOfWeek() == DayOfWeek.SATURDAY || asOfDate.getDayOfWeek() == DayOfWeek.SUNDAY;
-                if(!weekend) {
+                if (!weekend) {
                     PortfolioValue portfolioValue = calculatePortfolioValue(timestamp, portfolioId);
                     history.put(timestamp, portfolioValue);
                 }

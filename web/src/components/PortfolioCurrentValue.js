@@ -35,7 +35,7 @@ class PortfolioCurrentValue extends Component {
 
       return <div>
         <Row>
-          <Col mdOffset={3} md={6}>
+          <Col mdOffset={2} md={8}>
 
             <div style={{ backgroundColor, color: 'rgb(245, 245, 245)', padding: '4px 6px 4px 4px', fontSize: '13px', fontWeight: 'bold', boxShadow: '0 0 4px rgba(0,0,0,.4)'}}>
               <span>{this.props.params.portfolioName}</span>

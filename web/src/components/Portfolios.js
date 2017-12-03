@@ -14,7 +14,7 @@ class Portfolios extends Component {
         const keys = Object.keys(this.props.portfolios);
         return <div>
             <Row>
-                <Col mdOffset={3} md={6}>
+                <Col mdOffset={2} md={8}>
                     <PortfolioHistory />
                 </Col>
             </Row>

@@ -17,10 +17,7 @@ export default class Axis extends React.Component {
     }
 
     render() {
-        const tranform = `translate(${this.props.translate.x},${this.props.translate.y})`;
-        return <g 
-                    className="axis" 
-                    transform={tranform} >
-        </g>
+        const transform = `translate(${this.props.translate.x},${this.props.translate.y})`;
+        return <g className="axis" transform={transform} />
     }
 }

@@ -53,7 +53,7 @@ background: rgba(0, 119, 255, 0.671);
 
 .grid-number-cell{
   text-align: right;
-  width:100px;
+  width:120px;
 }
 
 .grid-header{
@@ -76,7 +76,7 @@ background: rgba(0, 119, 255, 0.671);
   font-weight: bold;
 }
 .scheme-name-in-grid{
-    width:300px
+    width:350px
 }
 .navPlotAreFill{
   stroke: #006666;
