@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import * as actions from '../actions';
 import Grid from './common/Grid';
 import NAVAndTxPlot from './plot/NAVAndTxPlot';
+import PortfolioHistory from './PortfolioHistory';
 
 class PortfolioCurrentValue extends Component {
 
@@ -15,7 +16,11 @@ class PortfolioCurrentValue extends Component {
   }
 
   selectScheme(lineItem) {
-    this.setState({ selectedLineItem: lineItem })
+    if (this.state.selectedLineItem && this.state.selectedLineItem.scheme.code === lineItem.scheme.code) {
+      this.setState({ selectedLineItem: undefined });
+    } else {
+      this.setState({ selectedLineItem: lineItem });
+    }
   }
 
   componentDidMount() {
@@ -26,6 +31,8 @@ class PortfolioCurrentValue extends Component {
   render() {
     const currentPortfolioValue = this.props.currentPortfolioValue;
     if (currentPortfolioValue && currentPortfolioValue.portfolioValueOneDayDelta) {
+      const portfolioId = this.props.params.portfolioId
+
       const cost = currentPortfolioValue.portfolioValueOneDayDelta.today.cost
       const value = currentPortfolioValue.portfolioValueOneDayDelta.today.value;
       const returns = value - cost;
@@ -33,15 +40,15 @@ class PortfolioCurrentValue extends Component {
 
       const backgroundColor = portfolioNameHeaderColors[this.props.params.portfolioId % 2];
 
-      return <div>
+      return <div style={{ boxShadow: 'rgba(0, 0, 0, 0.4) 0px 0px 4px', padding: '4px', background:' #f5f5f5'}}>
         <Row>
-          <Col mdOffset={2} md={8}>
+          <Col md={7}>
 
-            <div style={{ backgroundColor, color: 'rgb(245, 245, 245)', padding: '4px 6px 4px 4px', fontSize: '13px', fontWeight: 'bold', boxShadow: '0 0 4px rgba(0,0,0,.4)'}}>
+            <div style={{ backgroundColor, color: 'rgb(245, 245, 245)', padding: '4px 6px 4px 4px', fontSize: '13px', fontWeight: 'bold' }}>
               <span>{this.props.params.portfolioName}</span>
             </div>
 
-            <div style={{ backgroundColor: '#f5f5f5', fontSize: '10px', boxShadow: '0 0 4px rgba(0,0,0,.4)' }}>
+            <div style={{ backgroundColor: '#f5f5f5', fontSize: '10px' }}>
               <Grid
                 data={this.props.subHeadersOnly ? [] : currentPortfolioValue.portfolioValueOneDayDelta.schemeValues}
                 subHeaders={currentPortfolioValue.portfolioValueOneDayDelta}
@@ -91,11 +98,13 @@ class PortfolioCurrentValue extends Component {
 
             </div>
           </Col>
-        </Row>
-        <Row>
-          <Col mdOffset={3} md={6} style={{marginTop:'15px'}}>
+
+          <Col md={5}>
             {
               this.state.selectedLineItem && <NAVAndTxPlot lineItem={this.state.selectedLineItem} />
+            }
+            {
+              !this.state.selectedLineItem && <PortfolioHistory portfolioId={portfolioId} />
             }
           </Col>
 

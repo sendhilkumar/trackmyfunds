@@ -25,21 +25,13 @@ class Admin extends Component {
                     </Col>
                 </Row>
 
-                <Row>
-                    <Col md={12}>
-                        <div style={{ padding: '0px 0px 10px 0px'}}>
-                            <Button bsStyle="primary" bsSize="large" onClick={() => this.loadNAV()}>Load current NAV</Button>
-                        </div>
-                    </Col>
-                </Row>
-
                 {
                     this.props.currentNAVLoad && <Row>
                         <Col md={12}>
                             <h3>Load id: {this.props.currentNAVLoad.id}</h3>
                             <h3>Loaded at: {moment(this.props.currentNAVLoad.loadTime).format("DD-MMM-YYYY")}</h3>
                             <h3>Latest NAV date: {moment(this.props.currentNAVLoad.latestNavDate).format("DD-MMM-YYYY")}</h3>
-                            <h3>Max occuring date: {moment(this.props.currentNAVLoad.maxOccuringDate).format("DD-MMM-YYYY")}</h3>
+                            <h3>Max occurring date: {moment(this.props.currentNAVLoad.maxOccuringDate).format("DD-MMM-YYYY")}</h3>
                         </Col>
                     </Row>
                 }

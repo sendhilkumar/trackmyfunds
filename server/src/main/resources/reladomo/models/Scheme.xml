@@ -8,6 +8,17 @@
     <Attribute name="amc" javaType="String" columnName="amc" maxLength="500" nullable="false"/>
     <Attribute name="rtaCode" javaType="String" columnName="rta_code" maxLength="50" nullable="true"/>
 
+    <Attribute name="primaryName" javaType="String" columnName="primary_name" maxLength="500" nullable="false"/>
+    <Attribute name="type" javaType="String" columnName="type" maxLength="100" nullable="false"/>
+    <Attribute name="category" javaType="String" columnName="category" maxLength="100" nullable="false"/>
+    <Attribute name="minAmount" javaType="String" columnName="min_amount" maxLength="100" nullable="true"/>
+    <Attribute name="launchDate" javaType="String" columnName="launch_Date" maxLength="100" nullable="true"/>
+    <Attribute name="closureDate" javaType="String" columnName="closure_date" maxLength="100" nullable="true"/>
+    <Attribute name="closed" javaType="String" columnName="closed" maxLength="1" nullable="true"/>
+    <Attribute name="load" javaType="String" columnName="load" maxLength="2000" nullable="true"/>
+    <Attribute name="isinGrowth" javaType="String" columnName="isin_growth" maxLength="100" nullable="true"/>
+    <Attribute name="isinReinvestment" javaType="String" columnName="isin_reinvestment" maxLength="100" nullable="true"/>
+
     <Relationship name="portfolio" relatedObject="Portfolio" cardinality="many-to-one">
         Portfolio.id = PortfolioHolding.portfolioId and
         PortfolioHolding.schemeCode = this.code

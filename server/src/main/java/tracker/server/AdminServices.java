@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 
 @Path("/admin")
 @Produces(MediaType.APPLICATION_JSON)
-public class AdminService {
+public class AdminServices {
 
     @Path("loadNAV")
     @POST

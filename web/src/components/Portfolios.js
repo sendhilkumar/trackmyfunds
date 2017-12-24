@@ -14,12 +14,6 @@ class Portfolios extends Component {
         const keys = Object.keys(this.props.portfolios);
         return <div>
             <Row>
-                <Col mdOffset={2} md={8}>
-                    <PortfolioHistory />
-                </Col>
-            </Row>
-
-            <Row>
                 <Col xs={12} md={12} style={{ margin: '10px 0px 10px 10px' }}>
                     <PortfolioCurrentValue subHeadersOnly={true} params={{ portfolioId: 0, portfolioName: 'All' }} />
                 </Col>

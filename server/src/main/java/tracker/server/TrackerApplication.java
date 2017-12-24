@@ -28,9 +28,9 @@ public class TrackerApplication extends Application<TrackerConfiguration> {
     public void run(TrackerConfiguration configuration, Environment environment) {
         Mithra.init();
         environment.getObjectMapper().registerModule(new JacksonReladomoModule(true));
-        environment.jersey().register(new TrackerService());
-        environment.jersey().register(new PortfolioValueService());
-        environment.jersey().register(new AdminService());
+        environment.jersey().register(new SchemesServices());
+        environment.jersey().register(new PortfolioServices());
+        environment.jersey().register(new AdminServices());
         environment.jersey().register(MultiPartFeature.class);
     }
 }

@@ -10,7 +10,7 @@ import * as d3 from 'd3';
 class PortfolioHistory extends Component {
 
   componentDidMount() {
-    const portfolioId = this.props.params && this.props.params.portfolioId ? this.props.params.portfolioId : 0
+    const portfolioId = this.props.portfolioId ? this.props.portfolioId : 0
     this.props.getPortfolioHistory(portfolioId);
   }
 
@@ -45,7 +45,7 @@ class PortfolioHistory extends Component {
 
       const xAxis = d3.axisBottom()
         .scale(xScale)
-        .ticks(d3.timeMonday.every(2))
+        .ticks(d3.timeMonth.every(1))
         .tickFormat(d3.timeFormat("%d/%m/%y"));
 
       const yAxis = d3.axisLeft()
@@ -54,18 +54,13 @@ class PortfolioHistory extends Component {
 
 
       return <div>
-        <Row>
-          <Col mdOffset={1} md={10}>
-            <svg viewBox={`0 0 ${plotWidth} ${plotHeight}`} >
-              <Axis axisType="x" axis={xAxis} translate={{ x: 0, y: plotHeight - axisSize }} />
-              <Axis axisType="y" axis={yAxis} translate={{ x: axisSize, y: 0 }} />
+          <svg viewBox={`0 0 ${plotWidth} ${plotHeight}`} >
+            <Axis axisType="x" axis={xAxis} translate={{ x: 0, y: plotHeight - axisSize }} />
+            <Axis axisType="y" axis={yAxis} translate={{ x: axisSize, y: 0 }} />
 
-              <path d={valueArea(portfolioHistory)} className='valueAreaFill' />
-              <path d={costArea(portfolioHistory)} className='costAreaFill' />
-
-            </svg>
-          </Col>
-        </Row>
+            <path d={valueArea(portfolioHistory)} className='valueAreaFill' />
+            <path d={costArea(portfolioHistory)} className='costAreaFill' />
+          </svg>
       </div>
     } else {
       return <div />
@@ -74,7 +69,7 @@ class PortfolioHistory extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const portfolioHistory = state.portfolioHistory;
+  const portfolioHistory = state.portfolioHistory[ownProps.portfolioId];
   return {
     portfolioHistory
   }

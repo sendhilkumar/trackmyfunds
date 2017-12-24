@@ -55,7 +55,7 @@ class NAVAndTxPlot extends Component {
       const xAxis = d3.axisBottom()
         .scale(xScale)
         .ticks(d3.timeMonth.every(1))
-        .tickFormat(d3.timeFormat("%b"));
+        .tickFormat(d3.timeFormat("%d/%m/%y"));
 
       const yAxis = d3.axisLeft()
         .scale(yScale)
@@ -88,7 +88,7 @@ class NAVAndTxPlot extends Component {
 
           <Row>
             <Col md={12}>
-              <svg width={plotWidth} height={plotHeight}>
+              <svg viewBox={`0 0 ${plotWidth} ${plotHeight}`} >
                 <Axis axisType="x" axis={xAxis} translate={{ x: 0, y: plotHeight - axisSize }} />
                 <Axis axisType="y" axis={yAxis} translate={{ x: axisSize, y: 0 }} />
 
@@ -136,7 +136,7 @@ class NAVAndTxPlot extends Component {
           </Row>
 
           <Row>
-            <Col md={12} style={{ margin: '30px 0px 20px 20px' }}>
+            <Col md={12}>
               <Grid key={this.props.lineItem.scheme.name}
                 data={transactions}
                 columns={[

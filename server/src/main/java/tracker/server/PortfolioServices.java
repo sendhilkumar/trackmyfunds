@@ -5,12 +5,10 @@ import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.map.MutableMap;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.map.mutable.UnifiedMap;
-import com.gs.fw.common.mithra.AggregateList;
 import com.gs.fw.common.mithra.finder.Operation;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tracker.data.portfolio.loader.CASLoader;
@@ -24,15 +22,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Path("/portfolio")
 @Produces(MediaType.APPLICATION_JSON)
-public class PortfolioValueService {
+public class PortfolioServices {
     private static final String PASSWORD = "Finz123SM";
-    private static Logger logger = LoggerFactory.getLogger(PortfolioValueService.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(PortfolioServices.class.getName());
 
     private static final Function<Integer, SchemeValue> NEW_SCHEME = object -> new SchemeValue(SchemeFinder.findByPrimaryKey(object));
 
@@ -157,20 +154,20 @@ public class PortfolioValueService {
         Scheme scheme = schemeValue.getScheme();
         NetAssetValue navRecord = NetAssetValueFinder.findByPrimaryKey(scheme.getCode(), asOfDate);
 
-        if (navRecord == null) {
-            logger.info("NAV of scheme: " + scheme.getName() + " not found for date:" + asOfDate.toString());
-
-            AggregateList navLoadAggregateData = new AggregateList(NetAssetValueFinder.schemeCode().eq(scheme.getCode())
-                    .and(NetAssetValueFinder.date().lessThan(asOfDate)));
-            navLoadAggregateData.addAggregateAttribute("latest", NetAssetValueFinder.date().max());
-            asOfDate = navLoadAggregateData.get(0).getAttributeAsTimestamp("latest");
-            navRecord = NetAssetValueFinder.findByPrimaryKey(scheme.getCode(), asOfDate);
-
-            logger.info("Falling back to " + asOfDate.toString());
+        int fallBackCounter = 0;
+        Timestamp fallbackDate = asOfDate;
+        while (navRecord == null && fallBackCounter < 7) {
+            fallBackCounter++;
+            fallbackDate = Timestamp.valueOf(fallbackDate.toLocalDateTime().minusDays(1));
+            navRecord = NetAssetValueFinder.findByPrimaryKey(scheme.getCode(), fallbackDate);
         }
 
-        schemeValue.setLatestNAVDate(asOfDate);
-        schemeValue.setNav(navRecord.getNetAssetValue());
-        schemeValue.calculateXirr();
+        if (navRecord != null) {
+            schemeValue.setLatestNAVDate(asOfDate);
+            schemeValue.setNav(navRecord.getNetAssetValue());
+            schemeValue.calculateXirr();
+        } else {
+            throw new RuntimeException("Could not find NAV of scheme:" + scheme.getName() + " for date " + asOfDate.toLocalDateTime() + " or for any of 7 days earlier");
+        }
     }
 }
