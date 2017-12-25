@@ -153,8 +153,9 @@ public class SchemesServices {
                 SchemeFinder.category().in(UnifiedSet.newSetWith("Growth", "ELSS", "Balanced"))
                         .and(SchemeFinder.closed().eq("N"))
                         .and(SchemeFinder.name().contains("rowth"))
-                        .and(SchemeFinder.name().contains("irect"))
+//                        .and(SchemeFinder.name().contains("egular"))
                         .and(SchemeFinder.name().notContains("onus"))
+                        .and(SchemeFinder.name().notContains("ividend"))
                         .and(SchemeFinder.isinGrowth().isNotNull())
                         .and(SchemeFinder.isinReinvestment().isNull())
         );

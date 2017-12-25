@@ -62,7 +62,6 @@ export default class Grid extends Component {
     }
 
     render() {
-        console.log(this.props.data);
         const headers = this.props.columns.map(
             (column) =>
                 <div
@@ -81,8 +80,6 @@ export default class Grid extends Component {
                     {column.displayFunction(column.valueFunction(this.props.subHeaders))}
                 </div>
         )
-
-        console.log(this.state.data);
 
         const rows = this.state.data.map(
             (row) =>
