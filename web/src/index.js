@@ -18,12 +18,14 @@ import NAVAndTxPlot from './components/plot/NAVAndTxPlot';
 import Admin from './components/Admin';
 import App from './components/App';
 import StatementUpload from './components/StatementUpload';
+import TopSchemes from './components/TopSchemes';
 
 import hist from './reducers/hist'
 import currentPortfolioValue from './reducers/currentPortfolioValue'
 import currentNAVLoad from './reducers/currentNAVLoad'
 import portfolios from './reducers/portfolios'
 import portfolioHistory from './reducers/portfolioHistory'
+import topSchemes from './reducers/topSchemes'
 
 const reducers = combineReducers({
   hist,
@@ -31,6 +33,7 @@ const reducers = combineReducers({
   currentNAVLoad,
   portfolios,
   portfolioHistory,
+  topSchemes,
   routing: routerReducer
 })
 
@@ -52,6 +55,7 @@ render(
         <Route path="history/:fundId" component={NAVAndTxPlot} />
         <Route path="admin" component={Admin} />
         <Route path="history" component={PortfolioHistory} />
+        <Route path="top" component={TopSchemes} />
 
       </Route>
     </Router>

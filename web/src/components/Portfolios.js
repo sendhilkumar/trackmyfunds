@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import * as actions from '../actions';
 import PortfolioCurrentValue from './PortfolioCurrentValue';
-import PortfolioHistory from './PortfolioHistory';
 
 class Portfolios extends Component {
     componentDidMount() {

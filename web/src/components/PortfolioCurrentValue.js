@@ -33,9 +33,9 @@ class PortfolioCurrentValue extends Component {
     if (currentPortfolioValue && currentPortfolioValue.portfolioValueOneDayDelta) {
       const portfolioId = this.props.params.portfolioId
 
-      const cost = currentPortfolioValue.portfolioValueOneDayDelta.today.cost
-      const value = currentPortfolioValue.portfolioValueOneDayDelta.today.value;
-      const returns = value - cost;
+      // const cost = currentPortfolioValue.portfolioValueOneDayDelta.today.cost
+      // const value = currentPortfolioValue.portfolioValueOneDayDelta.today.value;
+      // const returns = value - cost;
       // const returnPct = 100 * returns / cost;
 
       const backgroundColor = portfolioNameHeaderColors[this.props.params.portfolioId % 2];

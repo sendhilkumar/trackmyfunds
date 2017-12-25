@@ -125,6 +125,16 @@ public class SchemesServices {
         return allReturns;
     }
 
+    @Path("top")
+    @GET
+    @Timed
+    public List<SchemeReturns> getTopSchemes(@QueryParam("criteria") String criteria) {
+        String criterias = criteria != null ? criteria : "3y>=12,2y>=20,1y>=20,1m>=4";
+        String returnPeriodsToDisplay = "5y,4y,3y,2y,1y,6m,1m,2w,1w,1d";
+
+        return getSchemes(criterias, returnPeriodsToDisplay);
+    }
+
     @Path("filter/{criterias}/{returnPeriods}")
     @GET
     @Timed
@@ -139,7 +149,16 @@ public class SchemesServices {
 
         cacheNavs(periods, criteriaList);
 
-        SchemeList schemes = SchemeFinder.findMany(SchemeFinder.all());
+        SchemeList schemes = SchemeFinder.findMany(
+                SchemeFinder.category().in(UnifiedSet.newSetWith("Growth", "ELSS", "Balanced"))
+                        .and(SchemeFinder.closed().eq("N"))
+                        .and(SchemeFinder.name().contains("rowth"))
+                        .and(SchemeFinder.name().contains("irect"))
+                        .and(SchemeFinder.name().notContains("onus"))
+                        .and(SchemeFinder.isinGrowth().isNotNull())
+                        .and(SchemeFinder.isinReinvestment().isNull())
+        );
+
         for (Scheme scheme : schemes) {
             boolean satisfied = true;
             int schemeCode = scheme.getCode();

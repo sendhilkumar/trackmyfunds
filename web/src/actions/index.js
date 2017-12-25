@@ -79,6 +79,16 @@ export const getPortfolios =() => {
   }
 }
 
+export const getTopSchemes =(criteria) => {
+  return {
+    [CALL_API]: {
+      endpoint: `/api/schemes/top?criteria=${criteria}`,
+      method: 'GET',
+      types: ['REQUEST_TOP_SCHEMES', 'SUCCESS_TOP_SCHEMES', 'FAILURE_TOP_SCHEMES']
+    }
+  }
+}
+
 export const loadCurrentNAV =() => {
   return {
     [CALL_API]: {

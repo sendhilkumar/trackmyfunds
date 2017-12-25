@@ -24,6 +24,7 @@ export default class Grid extends Component {
         this.createComparator = this.createComparator.bind(this);
 
         const orderBy = { order: 1, column: this.props.columns[0] };
+
         this.state = {
             orderBy: orderBy,
             data: this.props.data.sort(this.createComparator(orderBy))
@@ -61,6 +62,7 @@ export default class Grid extends Component {
     }
 
     render() {
+        console.log(this.props.data);
         const headers = this.props.columns.map(
             (column) =>
                 <div
@@ -79,6 +81,8 @@ export default class Grid extends Component {
                     {column.displayFunction(column.valueFunction(this.props.subHeaders))}
                 </div>
         )
+
+        console.log(this.state.data);
 
         const rows = this.state.data.map(
             (row) =>

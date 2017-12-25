@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
+// import { Row, Col } from 'react-bootstrap';
 import Axis from './plot/Axis';
 // import * as moment from 'moment';
 import * as actions from '../actions';
