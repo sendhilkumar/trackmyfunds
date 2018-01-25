@@ -13,6 +13,7 @@ import java.util.Map;
 public class SchemeReturns {
     private Scheme scheme;
     private Map<String, Double> returns = UnifiedMap.newMap();
+    private Map<String, Double> volatility = UnifiedMap.newMap();
 
     public SchemeReturns(Scheme scheme) {
         this.scheme = scheme;
@@ -22,11 +23,19 @@ public class SchemeReturns {
         returns.put(period, value);
     }
 
+    public void addVolatility(String period, double value) {
+        volatility.put(period, value);
+    }
+
     public Scheme getScheme() {
         return scheme;
     }
 
     public Map<String, Double> getReturns() {
         return returns;
+    }
+
+    public Map<String, Double> getVolatility() {
+        return volatility;
     }
 }

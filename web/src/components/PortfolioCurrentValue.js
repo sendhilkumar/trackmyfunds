@@ -11,8 +11,9 @@ class PortfolioCurrentValue extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { selectedSchemeCode: undefined };
+    this.state = { selectedLineItem: undefined, showPortfolioHistoryPlot: false };
     this.selectScheme = this.selectScheme.bind(this);
+    this.togglePortfolioHistoryPlot = this.togglePortfolioHistoryPlot.bind(this);
   }
 
   selectScheme(lineItem) {
@@ -21,6 +22,10 @@ class PortfolioCurrentValue extends Component {
     } else {
       this.setState({ selectedLineItem: lineItem });
     }
+  }
+
+  togglePortfolioHistoryPlot() {
+    this.setState({ selectedLinshowPortfolioHistoryPloteItem: !this.state.showPortfolioHistoryPlot });
   }
 
   componentDidMount() {
@@ -40,7 +45,7 @@ class PortfolioCurrentValue extends Component {
 
       const backgroundColor = portfolioNameHeaderColors[this.props.params.portfolioId % 2];
 
-      return <div style={{ boxShadow: 'rgba(0, 0, 0, 0.4) 0px 0px 4px', padding: '4px', background:' #f5f5f5'}}>
+      return <div style={{ boxShadow: 'rgba(0, 0, 0, 0.4) 0px 0px 4px', padding: '4px', background: ' #f5f5f5' }}>
         <Row>
           <Col md={7}>
 
@@ -104,7 +109,7 @@ class PortfolioCurrentValue extends Component {
               this.state.selectedLineItem && <NAVAndTxPlot lineItem={this.state.selectedLineItem} />
             }
             {
-              !this.state.selectedLineItem && <PortfolioHistory portfolioId={portfolioId} />
+              !this.state.selectedLineItem && this.state.showPortfolioHistoryPlot && <PortfolioHistory portfolioId={portfolioId} />
             }
           </Col>
 

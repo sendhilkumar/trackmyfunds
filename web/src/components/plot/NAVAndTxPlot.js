@@ -54,8 +54,8 @@ class NAVAndTxPlot extends Component {
 
       const xAxis = d3.axisBottom()
         .scale(xScale)
-        .ticks(d3.timeMonth.every(1))
-        .tickFormat(d3.timeFormat("%d/%m/%y"));
+        .ticks(d3.timeMonth.every(3))
+        .tickFormat(d3.timeFormat("%m/%y"));
 
       const yAxis = d3.axisLeft()
         .scale(yScale)
@@ -135,37 +135,39 @@ class NAVAndTxPlot extends Component {
             </Col>
           </Row>
 
-          <Row>
-            <Col md={12}>
-              <Grid key={this.props.lineItem.scheme.name}
-                data={transactions}
-                columns={[
-                  {
-                    headerName: 'Date',
-                    valueFunction: lineItem => lineItem.date,
-                    displayFunction: value => moment(value).format("DD-MMM-YYYY"),
-                    valueDataType: 'date'
-                  },
-                  {
-                    headerName: 'Description',
-                    valueFunction: lineItem => lineItem.description,
-                    displayFunction: value => value,
-                    valueDataType: 'text'
-                  },
-                  {
-                    headerName: `Amount`,
-                    valueFunction: lineItem => lineItem.amount,
-                    displayFunction: value => formatted(value)
-                  },
-                  {
-                    headerName: `Price`,
-                    valueFunction: lineItem => lineItem.price,
-                    displayFunction: value => value
-                  }
-                ]}
-                rowKeyFunction={lineItem => lineItem.id + lineItem.schemeCode} />
-            </Col>
-          </Row>
+          {
+            transactions && <Row>
+              <Col md={12}>
+                <Grid key={this.props.lineItem.scheme.name}
+                  data={transactions}
+                  columns={[
+                    {
+                      headerName: 'Date',
+                      valueFunction: lineItem => lineItem.date,
+                      displayFunction: value => moment(value).format("DD-MMM-YYYY"),
+                      valueDataType: 'date'
+                    },
+                    {
+                      headerName: 'Description',
+                      valueFunction: lineItem => lineItem.description,
+                      displayFunction: value => value,
+                      valueDataType: 'text'
+                    },
+                    {
+                      headerName: `Amount`,
+                      valueFunction: lineItem => lineItem.amount,
+                      displayFunction: value => formatted(value)
+                    },
+                    {
+                      headerName: `Price`,
+                      valueFunction: lineItem => lineItem.price,
+                      displayFunction: value => value
+                    }
+                  ]}
+                  rowKeyFunction={lineItem => lineItem.id + lineItem.schemeCode} />
+              </Col>
+            </Row>
+          }
         </div>
       );
     } else {
@@ -194,7 +196,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NAVAndTxPlot)
+export default connect(mapStateToProps, mapDispatchToProps)(NAVAndTxPlot)

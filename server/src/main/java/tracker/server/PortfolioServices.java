@@ -124,6 +124,7 @@ public class PortfolioServices {
 
     private PortfolioValue calculatePortfolioValue(Timestamp asOfDate, int portfolio) {
         TransactionList transactions = getTransactions(asOfDate, portfolio);
+        transactions.addOrderBy(TransactionFinder.id().ascendingOrderBy());
 
         MutableMap<Integer, SchemeValue> bySchemeCode = UnifiedMap.newMap();
         double totalValue = 0.0;
